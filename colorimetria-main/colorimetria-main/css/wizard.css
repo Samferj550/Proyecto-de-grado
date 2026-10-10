@@ -1,0 +1,476 @@
+/* ── Wizard (Configuración de sesión) ─────────────── */
+
+/* Stepper */
+.step-indicator {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 20px;
+  font-size: .82rem;
+  color: #9ca3af;
+  flex-wrap: wrap;
+}
+.step {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: #f3f4f6;
+  white-space: nowrap;
+}
+.step.active {
+  background: var(--accent, #f8c400);
+  color: #111;
+  font-weight: 700;
+}
+
+/* Grid de proveedores */
+.grid-proveedores {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 12px;
+}
+.proveedor-card {
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  padding: 16px;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+  background: #fff;
+}
+.proveedor-card:focus {
+  outline: none;
+}
+.proveedor-card:hover {
+  border-color: var(--accent, #f8c400);
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+}
+.proveedor-card.selected {
+  border-color: var(--accent, #f8c400);
+  background: #fffbeb;
+  box-shadow: 0 0 0 3px rgba(248,196,0,.2);
+}
+.proveedor-card h3 {
+  margin: 0 0 4px;
+  font-size: 1rem;
+}
+.proveedor-card p {
+  margin: 0;
+  font-size: .82rem;
+  color: #6b7280;
+}
+
+/* Grid de tipos de fruta */
+.grid-tipo-fruta {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+}
+.btn-tipo-fruta {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px 12px;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  background: #fff;
+  cursor: pointer;
+  transition: border-color .15s, box-shadow .15s;
+  font-size: .9rem;
+}
+.btn-tipo-fruta:focus {
+  outline: none;
+}
+.btn-tipo-fruta:hover:not(:disabled) {
+  border-color: var(--accent, #f8c400);
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+}
+.btn-tipo-fruta.disabled,
+.btn-tipo-fruta:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+.tipo-icono {
+  font-size: 2rem;
+}
+.tipo-nombre {
+  font-weight: 600;
+}
+.badge-soon {
+  font-size: .7rem;
+  background: #f3f4f6;
+  color: #6b7280;
+  padding: 2px 8px;
+  border-radius: 999px;
+}
+
+/* Formulario de sesión */
+.form-sesion {
+  max-width: 480px;
+}
+.form-sesion label {
+  display: block;
+  font-size: .85rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+  color: #374151;
+}
+.form-sesion input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--line, #d0d5dd);
+  border-radius: 10px;
+  font-size: .9rem;
+  margin-bottom: 16px;
+}
+
+/* Grid de chips de estado */
+.grid-estados-maduracion {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.chip-estado {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 999px;
+  font-size: .82rem;
+  cursor: pointer;
+  background: #fff;
+  user-select: none;
+}
+.chip-estado input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+}
+.chip-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Botón confirmar sesión */
+.btn-confirmar-sesion {
+  background: var(--accent, #f8c400);
+  color: #111;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 24px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-confirmar-sesion:hover {
+  background: #e0b000;
+}
+
+/* ── Selector de fruta en topbar ──────────────────── */
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+}
+.selector-fruta-wrap {
+  position: relative;
+}
+.btn-selector-fruta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 10px;
+  background: #fff;
+  cursor: pointer;
+  font-size: .9rem;
+  font-weight: 600;
+  transition: border-color .15s;
+}
+.btn-selector-fruta:hover {
+  border-color: var(--accent, #f8c400);
+}
+.dropdown-frutas {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  min-width: 200px;
+  background: #fff;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,.1);
+  z-index: 100;
+  list-style: none;
+  padding: 4px;
+  margin: 4px 0 0;
+}
+
+@media (max-width: 480px) {
+  .dropdown-frutas {
+    right: auto;
+    left: 50%;
+    transform: translateX(-50%);
+    min-width: 180px;
+    max-width: 92vw;
+  }
+}
+.dropdown-frutas li {
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: .88rem;
+  transition: background .12s;
+}
+.dropdown-frutas li:hover {
+  background: #f5f7fb;
+}
+.dropdown-frutas li.activa {
+  background: #fff8e0;
+  font-weight: 700;
+}
+.dropdown-frutas .badge-count {
+  font-size: .75rem;
+  background: #f3f4f6;
+  padding: 2px 8px;
+  border-radius: 999px;
+  color: #6b7280;
+}
+
+.btn-nueva-sesion {
+  background: var(--accent, #f8c400);
+  color: #111;
+  border: none;
+  border-radius: 10px;
+  padding: 8px 16px;
+  font-size: .85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s;
+}
+.btn-nueva-sesion:hover {
+  background: #e0b000;
+}
+
+.dropdown-empty {
+  padding: 8px 12px;
+  color: #9ca3af;
+  font-size: .82rem;
+  text-align: center;
+}
+
+/* ── Navegación del Wizard (atrás/siguiente) ───── */
+.wizard-nav {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  margin-top: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line, #e5e7eb);
+  flex-wrap: wrap;
+}
+.btn-back, .btn-next {
+  padding: 10px 0;
+  flex: 1;
+  max-width: 160px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 10px;
+  font-size: .9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+}
+.btn-back {
+  background: #f3f4f6;
+  color: #374151;
+}
+.btn-back:hover {
+  background: #e5e7eb;
+}
+.btn-back.active {
+  background: var(--accent, #f8c400);
+  color: #111;
+}
+.btn-next {
+  background: var(--accent, #f8c400);
+  color: #111;
+}
+.btn-next:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}
+.btn-next:hover:not(:disabled) {
+  background: #e0b000;
+}
+
+/* ── Tarjeta de categoría seleccionable ─────────── */
+.categoria-card {
+  border: 2px solid var(--line, #e5e7eb);
+  border-radius: 16px;
+  padding: 28px 36px;
+  cursor: pointer;
+  text-align: center;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+  background: #fff;
+  flex: 1;
+  min-width: 160px;
+}
+
+@media (max-width: 480px) {
+  .categoria-card { padding: 16px 14px; min-width: 0; }
+  .categoria-card .categoria-icono { font-size: 2.2rem; }
+  .categoria-card .categoria-nombre { font-size: .95rem; }
+}
+.categoria-card:hover {
+  border-color: #d1d5db;
+  box-shadow: 0 4px 12px rgba(0,0,0,.06);
+}
+.categoria-card.selected {
+  border-color: var(--accent, #f8c400);
+  background: #fffbeb;
+  box-shadow: 0 0 0 3px rgba(248,196,0,.2);
+}
+.categoria-card .categoria-icono {
+  font-size: 2.8rem;
+  display: block;
+  margin-bottom: 10px;
+}
+.categoria-card .categoria-nombre {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* ── Formulario inline crear proveedor ──────────── */
+.form-crear-proveedor {
+  grid-column: 1 / -1;
+  padding: 20px;
+  border: 1px solid var(--line, #e5e7eb);
+  border-radius: 14px;
+  background: #fafafa;
+  display: none;
+}
+.form-crear-proveedor.visible {
+  display: block;
+}
+.form-crear-proveedor h3 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+}
+.form-crear-proveedor label {
+  display: block;
+  font-size: .82rem;
+  font-weight: 600;
+  margin-bottom: 3px;
+  color: #374151;
+}
+.form-crear-proveedor input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--line, #d0d5dd);
+  border-radius: 8px;
+  font-size: .9rem;
+  margin-bottom: 10px;
+}
+.form-crear-proveedor .btn-guardar-proveedor {
+  background: var(--accent, #f8c400);
+  border: none;
+  padding: 10px 20px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: .9rem;
+  margin-top: 4px;
+}
+.form-crear-proveedor .btn-guardar-proveedor:hover {
+  background: #e0b000;
+}
+.form-crear-proveedor .error-msg {
+  color: #dc2626;
+  font-size: .82rem;
+  margin-top: 6px;
+}
+
+/* ── Botón de cerrar wizard (solo cuando hay datos) ─ */
+.wizard-close {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background .15s;
+  margin-left: auto;
+}
+.wizard-close:hover {
+  background: #f3f4f6;
+  color: #111;
+}
+.wizard-close.hidden {
+  display: none;
+}
+
+@media (max-width: 480px) {
+  .step-indicator { gap: 2px; font-size: .75rem; }
+  .step { padding: 4px 10px; white-space: nowrap; }
+  .grid-proveedores { grid-template-columns: 1fr; }
+  .grid-tipo-fruta { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .btn-tipo-fruta { padding: 14px 8px; font-size: .82rem; }
+  .tipo-icono { font-size: 1.6rem; }
+  .dropdown-proveedores { min-width: 180px; }
+  .form-sesion { max-width: 100%; }
+  .wizard-nav { gap: 12px; }
+  .btn-back, .btn-next { max-width: 130px; font-size: .82rem; }
+}
+@media (max-width: 375px) {
+  .wizard-nav { gap: 10px; }
+  .btn-back, .btn-next { max-width: 100%; font-size: .82rem; }
+}
+/* ── Modal overlay for wizard popup ──────────────── */
+.wizard-modal-overlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,.45);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+@media (max-width: 480px) {
+  .wizard-modal-overlay {
+    align-items: flex-end;
+    padding: 0;
+  }
+}
+
+.wizard-modal-content {
+  background: #fff;
+  border-radius: 20px;
+  padding: 28px 32px;
+  max-width: 680px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0,0,0,.25);
+}
+
+@media (max-width: 480px) {
+  .wizard-modal-content {
+    border-radius: 20px 20px 0 0;
+    padding: 20px 16px 32px;
+    max-height: 92vh;
+    width: 100%;
+    max-width: 100%;
+  }
+}

@@ -1,0 +1,293 @@
+:root {
+  --bg: #eef1f6;
+  --panel: #ffffff;
+  --text: #111827;
+  --muted: #6b7280;
+  --line: #e5e7eb;
+  --sidebar: #0f1115;
+  --sidebar-2: #1a1d23;
+  --accent: #f8c400;
+  --green: #4caf50;
+  --yellow: #ffbb17;
+  --red: #f15252;
+  --blue: #3b6ea8;
+  --shadow: 0 10px 28px rgba(16, 24, 40, .08);
+  --radius: 18px;
+  /* Responsive */
+  --sidebar-w: 250px;
+  --sidebar-w-md: 210px;
+  --content-padding: 18px;
+  --content-padding-sm: 12px;
+  --content-padding-xs: 8px;
+  --radius-sm: 14px;
+  --radius-xs: 10px;
+  --gap: 18px;
+  --gap-sm: 12px;
+  --gap-xs: 8px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Inter, Segoe UI, Arial, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+}
+
+input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app {
+  display: flex;
+  height: 100vh;
+  min-height: 100vh;
+}
+
+.content {
+  flex: 1;
+  height: 100vh;
+  padding: 18px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.page {
+  display: none;
+  gap: 18px;
+  flex-direction: column;
+}
+#page-fruta:checked ~ .app .page-fruta,
+#page-aromaticas:checked ~ .app .page-aromaticas,
+#page-config:checked ~ .app .page-config {
+  display: flex;
+}
+#page-config:checked ~ .app #dashboard-main {
+  display: none;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+  background: rgba(255, 255, 255, .75);
+  border: 1px solid rgba(255, 255, 255, .65);
+  backdrop-filter: blur(8px);
+  padding: 14px 16px;
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.title-block {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  min-width: 0;
+  flex: 1;
+}
+.title-icon {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  background: linear-gradient(180deg, #fff2bd, #ffe28e);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .05);
+}
+.title-icon.leaf {
+  background: linear-gradient(180deg, #e7f7df, #c9efbc);
+}
+.title-block h1 {
+  margin: 0;
+  font-size: 1.25rem;
+  line-height: 1.15;
+  letter-spacing: -.2px;
+}
+.title-block p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: .95rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: auto;
+  flex-wrap: wrap;
+}
+.date-btn, .export-dropdown > summary {
+  border: 1px solid var(--line);
+  background: #fff;
+  height: 46px;
+  border-radius: 12px;
+  padding: 0 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, .05);
+  cursor: pointer;
+  color: #111827;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.export-dropdown {
+  position: relative;
+}
+.export-dropdown > summary {
+  list-style: none;
+}
+.export-dropdown > summary::-webkit-details-marker {
+  display: none;
+}
+.dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 54px;
+  min-width: 150px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  z-index: 20;
+}
+.dropdown-menu a {
+  display: block;
+  padding: 12px 14px;
+  text-decoration: none;
+  color: var(--text);
+}
+.dropdown-menu a:hover {
+  background: #f5f7fb;
+}
+details:not([open]) .dropdown-menu {
+  display: none;
+}
+
+@media (max-width: 760px) {
+  html, body {
+    height: auto;
+    min-height: 100%;
+    overflow-y: auto;
+  }
+  .app {
+    height: auto;
+    min-height: 100vh;
+  }
+  .content {
+    height: auto;
+    overflow-y: visible;
+  }
+}
+
+@media (max-width: 1400px) {
+  .kpi-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+  .grid-3, .grid-bottom { grid-template-columns: 1fr; }
+  .side-stack { grid-template-rows: auto; }
+  .donut-wrap { grid-template-columns: 1fr; justify-items: center; }
+}
+@media (max-width: 980px) {
+  .sidebar { width: 210px; }
+  .fruit-grid { grid-template-columns: 1fr; }
+  .donut-wrap { grid-template-columns: 1fr; }
+}
+@media (max-width: 760px) {
+  .app { flex-direction: column; }
+  .content { padding: 12px; }
+  .topbar { padding: 10px 12px; gap: 10px; border-radius: 16px; }
+  .title-block { width: 100%; }
+  .actions { width: 100%; margin-left: 0; justify-content: flex-start; }
+}
+
+.panel-bi {
+  min-height: 0;
+  overflow: hidden;
+}
+.bi-frame {
+  position: relative;
+  flex: 1;
+  width: 100%;
+  min-height: 460px;
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #f8fafc;
+}
+.bi-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0;
+  display: block;
+}
+.bi-placeholder {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 20px;
+  color: #94a3b8;
+  font-size: .95rem;
+  font-weight: 600;
+  letter-spacing: .2px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #f1f5f9,
+      #f1f5f9 12px,
+      #e9eef5 12px,
+      #e9eef5 24px
+    );
+  border: 2px dashed #cbd5e1;
+  border-radius: 12px;
+}
+.bi-full-row { width: 100%; margin-top: 18px; }
+.panel-bi-wide .bi-frame { min-height: 560px; }
+.bi-row { display: grid; gap: 14px; margin-top: 14px; }
+.bi-row-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.bi-row .panel-bi { min-height: 500px; }
+@media (max-width: 980px) { .bi-row-2 { grid-template-columns: 1fr; } }
+@media (max-width: 760px) {
+  .bi-frame { min-height: 340px; }
+  .panel-bi-wide .bi-frame { min-height: 400px; }
+  .bi-row .panel-bi { min-height: 400px; }
+}
+@media (max-width: 480px) {
+  .topbar { padding: 10px; border-radius: 14px; }
+  .title-icon { width: 44px; height: 44px; font-size: 1.4rem; }
+  .title-block h1 { font-size: 1rem; }
+  .title-block p { font-size: .82rem; }
+  .date-btn, .export-dropdown > summary {
+    height: 38px;
+    padding: 0 10px;
+    font-size: .82rem;
+  }
+  .bi-frame { min-height: 260px; }
+  .panel-bi-wide .bi-frame { min-height: 300px; }
+  .bi-row .panel-bi { min-height: 340px; }
+}
+@media (max-width: 375px) {
+  .topbar { flex-direction: column; align-items: stretch; }
+  .title-block { min-width: 0; }
+  .actions { flex-wrap: wrap; gap: 6px; }
+  .date-btn, .export-dropdown > summary { font-size: .78rem; }
+  .content { padding: 8px; }
+  .bi-frame { min-height: 220px; }
+  .bi-row .panel-bi { min-height: 280px; }
+}

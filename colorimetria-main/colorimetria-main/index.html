@@ -1,0 +1,1216 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title data-i18n="Dashboard - Frutas y Plantas Aromáticas">Dashboard - Frutas y Plantas Aromáticas</title>
+  <link rel="stylesheet" href="css/base.css?v=15" />
+  <link rel="stylesheet" href="css/sidebar.css?v=15" />
+  <link rel="stylesheet" href="css/components.css?v=15" />
+  <link rel="stylesheet" href="css/modals.css?v=15" />
+  <link rel="stylesheet" href="css/wizard.css?v=15" />
+  <link rel="stylesheet" href="css/config.css?v=15" />
+</head>
+<body>
+
+  <input type="radio" name="page" id="page-fruta" checked>
+  <input type="radio" name="page" id="page-aromaticas">
+  <input type="radio" name="page" id="page-config">
+
+  <div class="app">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="pbi-logo" aria-hidden="true">
+          <span class="bar bar-1"></span>
+          <span class="bar bar-2"></span>
+          <span class="bar bar-3"></span>
+        </div>
+        <div class="brand-text"><strong data-i18n="Dashboard">Dashboard</strong></div>
+      </div>
+      <nav class="nav">
+        <label for="page-fruta" class="nav-item"><span class="nav-ico">🍓</span><span data-i18n="Frutas">Frutas</span></label>
+        <label for="page-aromaticas" class="nav-item"><span class="nav-ico">🌿</span><span data-i18n="Aromáticas">Aromáticas</span></label>
+        <label for="page-config" class="nav-item"><span class="nav-ico">⚙️</span><span data-i18n="Configuración">Configuración</span></label>
+      </nav>
+    </aside>
+
+    <main class="content">
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!--  WIZARD MODAL (popup superpuesto)              -->
+      <!-- ══════════════════════════════════════════════ -->
+      <div id="wizard-modal" class="wizard-modal-overlay" style="display:none;">
+        <div class="wizard-modal-content">
+
+          <!-- Paso 1 — Proveedor -->
+          <section id="vista-proveedor" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h1 style="font-size:1.2rem;margin:0;" data-i18n="Configuración inicial">📋 Configuración inicial</h1>
+              <button class="wizard-close hidden" onclick="cancelarWizard()" title="Cerrar">✕</button>
+            </div>
+            <div class="step-indicator">
+              <span class="step active" data-view="vista-proveedor" data-i18n="1. Proveedor">1. Proveedor</span>
+              <span class="step" data-view="vista-categoria" data-i18n="2. Categoría">2. Categoría</span>
+              <span class="step" data-view="vista-fruta" data-i18n="3. Tipo">3. Tipo</span>
+              <span class="step" data-view="vista-sesion" data-i18n="4. Sesión">4. Sesión</span>
+            </div>
+            <div class="grid-proveedores" id="grid-proveedores">
+              <p style="color:#6b7280;" data-i18n="Cargando proveedores…">Cargando proveedores…</p>
+            </div>
+            <div class="form-crear-proveedor" id="form-crear-proveedor">
+              <h3 data-i18n="➕ Crear nuevo proveedor">➕ Crear nuevo proveedor</h3>
+              <label for="input-nuevo-proveedor-nombre" data-i18n="Nombre">Nombre</label>
+              <input type="text" id="input-nuevo-proveedor-nombre" data-i18n-placeholder="Ej: Proveedor ABC">
+              <p class="error-msg" id="error-nombre"></p>
+              <label for="input-nuevo-proveedor-nit" data-i18n="NIT (máx. 10 caracteres)">NIT (máx. 10 caracteres)</label>
+              <input type="text" id="input-nuevo-proveedor-nit" maxlength="10" data-i18n-placeholder="Ej: 1234567890" required>
+              <p class="error-msg" id="error-nit"></p>
+              <label for="input-nuevo-proveedor-ciudad" data-i18n="Ciudad">Ciudad</label>
+              <input type="text" id="input-nuevo-proveedor-ciudad" data-i18n-placeholder="Bogotá D.C">
+              <label for="input-nuevo-proveedor-contacto" data-i18n="Contacto">Contacto</label>
+              <input type="text" id="input-nuevo-proveedor-contacto" data-i18n-placeholder="Nombre del contacto" autocomplete="off">
+              <label for="input-nuevo-proveedor-telefono" data-i18n="Teléfono (7–10 dígitos)">Teléfono (7–10 dígitos)</label>
+              <input type="text" id="input-nuevo-proveedor-telefono" inputmode="numeric" pattern="[0-9]*" data-i18n-placeholder="Teléfono - Solo Números" autocomplete="off">
+              <p class="error-msg" id="error-telefono"></p>
+              <div class="wizard-nav" style="border:none;margin-top:12px;padding-top:0;">
+                <button type="button" class="btn-back" id="btn-cancelar-proveedor" onclick="cancelarCrearProveedor()" style="display:none;" data-i18n="Volver">Volver</button>
+                <button type="button" class="btn-next" onclick="guardarNuevoProveedor()" data-i18n="Siguiente">Siguiente</button>
+              </div>
+            </div>
+            <div class="wizard-nav">
+              <button class="btn-back" style="visibility:hidden" disabled data-i18n="Atrás">Atrás</button>
+            </div>
+          </section>
+
+          <!-- Paso 2 — Categoría -->
+          <section id="vista-categoria" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h1 style="font-size:1.2rem;margin:0;" data-i18n="📋 Configuración inicial">📋 Configuración inicial</h1>
+              <button class="wizard-close hidden" onclick="cancelarWizard()" title="Cerrar">✕</button>
+            </div>
+            <div class="step-indicator">
+              <span class="step" data-view="vista-proveedor" data-i18n="1. Proveedor">1. Proveedor</span>
+              <span class="step active" data-view="vista-categoria" data-i18n="2. Categoría">2. Categoría</span>
+              <span class="step" data-view="vista-fruta" data-i18n="3. Tipo">3. Tipo</span>
+              <span class="step" data-view="vista-sesion" data-i18n="4. Sesión">4. Sesión</span>
+            </div>
+            <h2 style="font-size:1rem;margin:12px 0;" data-i18n="¿Qué tipo de muestra vas a analizar?">¿Qué tipo de muestra vas a analizar?</h2>
+            <div style="display:flex;gap:16px;flex-wrap:wrap;" id="categoria-selector">
+              <div class="categoria-card" data-categoria="frutas" onclick="seleccionarCategoria('frutas')">
+                <span class="categoria-icono">🍓</span>
+                <span class="categoria-nombre" data-i18n="Frutas">Frutas</span>
+              </div>
+              <div class="categoria-card" data-categoria="aromaticas" onclick="seleccionarCategoria('aromaticas')">
+                <span class="categoria-icono">🌿</span>
+                <span class="categoria-nombre" data-i18n="Aromáticas">Aromáticas</span>
+              </div>
+            </div>
+            <div class="wizard-nav">
+              <button class="btn-back" onclick="irAtras('vista-categoria')" data-i18n="Atrás">Atrás</button>
+              <button class="btn-next" id="btn-next-categoria" disabled data-i18n="Siguiente">Siguiente</button>
+            </div>
+          </section>
+
+          <!-- Paso 3 — Tipo -->
+          <section id="vista-fruta" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h1 style="font-size:1.2rem;margin:0;" data-i18n="Configuración inicial">📋 Configuración inicial</h1>
+              <button class="wizard-close hidden" onclick="cancelarWizard()" title="Cerrar">✕</button>
+            </div>
+            <div class="step-indicator">
+              <span class="step" data-view="vista-proveedor" data-i18n="1. Proveedor">1. Proveedor</span>
+              <span class="step" data-view="vista-categoria" data-i18n="2. Categoría">2. Categoría</span>
+              <span class="step active" data-view="vista-fruta" data-i18n="3. Tipo">3. Tipo</span>
+              <span class="step" data-view="vista-sesion" data-i18n="4. Sesión">4. Sesión</span>
+            </div>
+            <h2 style="font-size:1rem;margin:12px 0;" data-i18n="Selecciona el tipo">Selecciona el tipo</h2>
+            <div class="grid-tipo-fruta" id="grid-tipo-fruta">
+              <p style="color:#6b7280;" data-i18n="Cargando tipos…">Cargando tipos…</p>
+            </div>
+            <div class="wizard-nav">
+              <button class="btn-back" onclick="irAtras('vista-fruta')" data-i18n="Atrás">Atrás</button>
+              <button class="btn-next" id="btn-next-fruta" disabled data-i18n="Siguiente">Siguiente</button>
+            </div>
+          </section>
+
+          <!-- Paso 4 — Sesión -->
+          <section id="vista-sesion" style="display:none;">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <h1 style="font-size:1.2rem;margin:0;" data-i18n="Configuración inicial">📋 Configuración inicial</h1>
+              <button class="wizard-close hidden" onclick="cancelarWizard()" title="Cerrar">✕</button>
+            </div>
+            <div class="step-indicator">
+              <span class="step" data-view="vista-proveedor" data-i18n="1. Proveedor">1. Proveedor</span>
+              <span class="step" data-view="vista-categoria" data-i18n="2. Categoría">2. Categoría</span>
+              <span class="step" data-view="vista-fruta" data-i18n="3. Tipo">3. Tipo</span>
+              <span class="step active" data-view="vista-sesion" data-i18n="4. Sesión">4. Sesión</span>
+            </div>
+            <style>
+              #vista-sesion .chip-estado { padding:4px 8px; }
+            </style>
+            <h2 id="titulo-sesion-fruta" style="font-size:1rem;margin:12px 0;" data-i18n="Configuración de sesión">Configuración de sesión</h2>
+            <div style="display:flex;gap:0;">
+              <button class="btn-back" id="tab-carga-individual" onclick="activarTabCarga('individual')" style="flex:1;text-align:center;white-space:nowrap;max-width:220px;padding:8px 0;border-radius:10px 0 0 10px;" data-i18n="Cargar Muestra Individual">Cargar Muestra Individual</button>
+              <button class="btn-back" id="tab-carga-lote" onclick="activarTabCarga('lote')" style="flex:1;text-align:center;white-space:nowrap;max-width:220px;padding:8px 0;border-radius:0 10px 10px 0;" data-i18n="Cargar Varias Muestras">Cargar Varias Muestras</button>
+            </div>
+
+            <!-- Lote (CSV + imágenes) -->
+            <div id="form-carga-lote" class="form-sesion" style="padding-left:15px;margin-top:16px;max-width:none;">
+              <label for="input-fecha-sesion" data-i18n="Fecha de la sesión">Fecha de la sesión</label>
+              <input type="date" id="input-fecha-sesion">
+
+              <div id="wrapper-nombre-lote" style="display:none;">
+              <label data-i18n="Nombre de la muestra">Nombre de la muestra</label>
+              <div style="display:flex;gap:8px;align-items:center;">
+                <input type="text" id="input-nombre-lote" disabled data-i18n-placeholder="Ej: fruta1.1.1" style="flex:1;margin-bottom:0;">
+                <button type="button" class="btn-secondary" onclick="habilitarEdicionNombre('lote')" style="flex:0 0 auto;padding:10px 14px;border:1px solid transparent;font-size:.9rem;" data-i18n="Editar">✏️ Editar</button>
+                </div>
+                <p id="msg-formato-lote" style="margin:2px 0 8px 0;font-size:.8rem;color:#16a34a;display:none;" data-i18n="Nombre Muestra con formato fruta1.1.1">Nombre Muestra con formato fruta1.1.1</p>
+              </div>
+
+              <label style="margin-bottom:8px;display:block;" data-i18n="Estados de maduración a evaluar">Estados de maduración a evaluar</label>
+              <div class="grid-estados-maduracion" id="grid-estados-maduracion" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;align-items:center;"></div>
+              <p class="error-msg" id="error-estados-lote-wizard" style="display:none!important;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona al menos un estado de maduración">Selecciona al menos un estado de maduración</p>
+
+              <p class="error-msg" id="error-csv-lote-wizard" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona un archivo CSV">Selecciona un archivo CSV</p>
+              <label data-i18n="Archivo CSV del colorímetro">Archivo CSV del colorímetro</label>
+              <div class="csv-inline-section" style="margin-bottom:8px;">
+                <button type="button" class="btn-secondary btn-seleccionar-csv-inline" onclick="document.getElementById('input-archivo-csv').click()" data-i18n="📄 Seleccionar CSV">📄 Seleccionar CSV</button>
+                <input type="file" id="input-archivo-csv" accept=".csv" multiple style="display:none;" onchange="actualizarNombreDesdeCSV(this, 'lote')">
+                <p class="csv-info-inline" id="csv-info-lote-wizard" style="margin:0;" data-i18n="Ningún archivo seleccionado">Ningún archivo seleccionado</p>
+                <div class="csv-preview-wrap csv-preview-lote" id="csv-preview-lote-wizard" style="display:none;"></div>
+              </div>
+
+              <p class="error-msg" id="error-imagenes-lote-wizard" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona al menos una imagen">Selecciona al menos una imagen</p>
+              <label data-i18n="Imágenes">Imágenes</label>
+              <div class="csv-inline-section">
+                <button type="button" class="btn-secondary btn-seleccionar-csv-inline" onclick="document.getElementById('input-imagenes-csv').click()" data-i18n="📁 Seleccionar imágenes">📁 Seleccionar imágenes</button>
+                <input type="file" id="input-imagenes-csv" accept="image/*" multiple style="display:none;" onchange="seleccionarImagenesLoteWizard(event)">
+                <p class="csv-info-inline" id="csv-info-imagenes-wizard" data-i18n="Ninguna imagen seleccionada">Ninguna imagen seleccionada</p>
+              </div>
+              <div class="lote-grid" id="lote-grid-imagenes-wizard" style="margin-top:8px;"></div>
+
+              <div id="wizard-asignaciones-wrap" style="display:none;margin-top:12px;">
+                <label data-i18n="Asignar imágenes a muestras">Asignar imágenes a archivos CSV</label>
+                <div class="lote-tabla-wrap" style="margin-bottom:8px;">
+                  <table class="lote-tabla">
+                    <thead>
+                      <tr><th data-i18n="#">#</th><th data-i18n="Nombre Archivo">Nombre Archivo</th><th data-i18n="Muestra">Nombre Muestra</th><th data-i18n="Imagen asignada">Imagen asignada</th></tr>
+                    </thead>
+                    <tbody id="wizard-tabla-asignaciones"></tbody>
+                  </table>
+                </div>
+              </div>
+
+              <p id="msg-lote-wizard" style="display:none;margin:8px 0;padding:8px 12px;border-radius:6px;font-size:.85rem;"></p>
+              <div class="wizard-nav" style="border:none;margin-top:12px;padding-top:0;">
+                <button class="btn-back" onclick="irAtras('vista-sesion')" data-i18n="Atrás">Atrás</button>
+                <button class="btn-next" onclick="importarCSV()" data-i18n="Guardar Muestras">💾 Guardar Muestras</button>
+              </div>
+            </div>
+
+            <!-- Individual (1 muestra + 1 imagen) -->
+            <div id="form-carga-individual" class="form-sesion" style="display:none;padding-left:15px;margin-top:16px;max-width:none;">
+              <label for="input-fecha-sesion" data-i18n="Fecha de la sesión">Fecha de la sesión</label>
+              <input type="date" id="input-fecha-sesion2">
+
+              <div id="wrapper-nombre-individual" style="display:none;">
+                <label data-i18n="Nombre de la muestra">Nombre de la muestra</label>
+                <div style="display:flex;gap:8px;align-items:center;">
+                  <input type="text" id="input-nombre-individual" disabled data-i18n-placeholder="Ej: fruta1.1.1" style="flex:1;max-width:400px;margin-bottom:0;">
+                    <button type="button" class="btn-secondary" onclick="habilitarEdicionNombre('individual')" style="flex:0 0 auto;padding:10px 14px;border:1px solid transparent;font-size:.9rem;" data-i18n="Editar">✏️ Editar</button>
+                </div>
+                <p id="msg-formato-individual" style="margin:2px 0 8px 0;font-size:.8rem;color:#16a34a;display:none;" data-i18n="Nombre Muestra con formato fruta1.1.1">Nombre Muestra con formato fruta1.1.1</p>
+              </div>
+
+              <label style="margin-bottom:8px;display:block;" data-i18n="Estados de maduración a evaluar">Estados de maduración a evaluar</label>
+              <div class="grid-estados-maduracion" id="grid-estados-maduracion-individual-wizard" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;align-items:center;"></div>
+              <p class="error-msg" id="error-estados-individual-wizard" style="display:none!important;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona al menos un estado de maduración">Selecciona al menos un estado de maduración</p>
+
+              <label data-i18n="Archivo CSV del colorímetro">Archivo CSV del colorímetro</label>
+              <div class="csv-inline-section" style="margin-bottom:8px;">
+                <button type="button" class="btn-secondary btn-seleccionar-csv-inline" onclick="document.getElementById('input-muestra-csv').click()" data-i18n="📄 Cargar CSV">📄 Cargar CSV</button>
+                <input type="file" id="input-muestra-csv" accept=".csv" style="display:none;" onchange="actualizarNombreDesdeCSV(this, 'individual')">
+                <div style="display:flex;align-items:center;gap:6px;">
+                  <p class="csv-info-inline" id="csv-info-individual-wizard" style="margin:0;" data-i18n="Ningún archivo seleccionado">Ningún archivo seleccionado</p>
+                  <button class="csv-remove-btn" id="btn-quitar-csv-individual-wizard" style="display:none;" onclick="quitarCSVWizard('individual')" data-i18n-title="Quitar CSV">✕</button>
+                </div>
+              </div>
+              <p class="error-msg" id="error-csv-individual-wizard" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona un archivo CSV">Selecciona un archivo CSV</p>
+
+        <label data-i18n="Imagen de la muestra *">Imagen de la muestra *</label>
+              <div class="upload-preview" id="upload-preview-individual" onclick="document.getElementById('input-muestra-imagen').click()" style="border:2px dashed #d1d5db;border-radius:8px;padding:20px;text-align:center;cursor:pointer;margin-bottom:8px;">
+                <img id="preview-img-individual" src="" alt="" style="display:none;max-width:100%;max-height:150px;border-radius:4px;">
+                <div class="upload-placeholder" id="upload-placeholder-individual">
+                  <span style="font-size:2rem;">🖼️</span>
+<p style="margin:4px 0;font-size:.9rem;" data-i18n="Haz clic para seleccionar una imagen">Haz clic para seleccionar una imagen</p>
+<small style="color:#9ca3af;" data-i18n="JPG, PNG o WEBP">JPG, PNG o WEBP</small>
+                </div>
+              </div>
+              <input type="file" id="input-muestra-imagen" accept="image/*" style="display:none;" onchange="previsualizarImagenIndividual(event)">
+              <p class="error-msg" id="error-imagen-individual-wizard" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona una imagen">Selecciona una imagen</p>
+
+              <div class="wizard-nav" style="border:none;margin-top:12px;padding-top:0;">
+                <button class="btn-back" onclick="irAtras('vista-sesion')" data-i18n="Atrás">Atrás</button>
+                <button class="btn-next" onclick="importarMuestraIndividual()" data-i18n="Guardar Muestra">Guardar Muestra</button>
+              </div>
+            </div>
+          </section>
+
+        </div>
+      </div>
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!--  DASHBOARD MAIN                               -->
+      <!-- ══════════════════════════════════════════════ -->
+      <section id="dashboard-main">
+
+        <!-- ================= PÁGINA PIÑAS ================= -->
+        <section class="page page-fruta">
+          <header class="topbar">
+            <div class="title-block">
+              <div class="title-icon">🍓</div>
+              <div>
+                <h1 data-i18n="ANÁLISIS DE MADURACIÓN DE FRUTAS">ANÁLISIS DE MADURACIÓN DE FRUTAS</h1>
+                <p data-i18n="Sistema inteligente de evaluación del estado de maduración">Sistema inteligente de evaluación del estado de maduración</p>
+              </div>
+            </div>
+            <div class="topbar-right">
+              <div class="selector-proveedor-wrap">
+                <button id="btn-selector-proveedor" class="btn-selector-proveedor">
+                  <span style="font-size:.85rem;">🏢</span>
+                  <span class="selector-proveedor-nombre">Cargando…</span>
+                  <span class="chevron">▾</span>
+                </button>
+                <ul id="dropdown-proveedores" class="dropdown-proveedores" hidden></ul>
+              </div>
+              <div class="selector-fruta-wrap">
+                <button id="btn-selector-fruta" class="btn-selector-fruta">
+                  <span id="selector-fruta-icono">🍍</span>
+                  <span id="selector-fruta-nombre">Piña</span>
+                  <span class="chevron">▾</span>
+                </button>
+                <ul id="dropdown-frutas" class="dropdown-frutas" hidden></ul>
+              </div>
+              <div class="selector-idioma-wrap" style="position:relative;">
+                <button id="btn-selector-idioma" class="btn-selector-proveedor" style="gap:4px;">
+                  <span id="selector-idioma-flag">🇪🇸</span>
+                  <span class="chevron">▾</span>
+                </button>
+                <ul id="dropdown-idioma" class="dropdown-proveedores" hidden>
+                  <li data-lang="en">🇬🇧</li>
+                </ul>
+              </div>
+            </div>
+          </header>
+
+          <div id="fruta-dashboard-blank" style="display:none;">
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:60px 20px;margin:18px 0;text-align:center;">
+              <p style="color:#6b7280;margin-bottom:24px;" data-i18n="Selecciona una fruta para ver sus datos">Selecciona una fruta para ver sus datos</p>
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra" data-i18n="Cargar Muestra Individual">Cargar Muestra Individual</button></span>
+                <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra btn-lote" data-i18n="Cargar Varias Muestras">Cargar Varias Muestras</button></span>
+              </div>
+            </div>
+          </div>
+
+          <div id="fruta-dashboard-data" style="display:flex;flex-direction:column;gap:18px;">
+          <section class="kpi-grid" id="kpi-grid-frutas"></section>
+
+            <div class="left-col-stack">
+              <section class="grid-bottom">
+                <article class="panel" style="height: auto;">
+                  <div class="panel-header-row">
+                    <h2 data-i18n="Últimas Muestras de Frutas">Últimas Muestras de Frutas</h2>
+                    <div class="panel-header-actions">
+                      <button class="btn-eliminar-muestras" onclick="abrirModalEliminar('fruta')" data-i18n="Eliminar Muestras">🗑️ Eliminar Muestras</button>
+                      <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra" onclick="abrirModalMuestra('pina')" data-i18n="Cargar Muestra Individual">Cargar Muestra Individual</button></span>
+                      <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra btn-lote" onclick="abrirModalLote('pina')" data-i18n="Cargar Varias Muestras">Cargar Varias Muestras</button></span>
+                    </div>
+                  </div>
+                  <div class="fruit-grid" id="cards-frutas" style="max-height: 480px; overflow-y: auto; padding-right: 4px;"></div>
+                </article>
+                <aside class="donut-fruta-duplicado">
+                  <article class="panel table-panel-sm">
+                    <h2 data-i18n="Distribución por estado de maduración">Distribución por estado de maduración</h2>
+                    <div class="donut-wrap">
+                      <div class="donut donut-fruta"><div class="donut-center"><strong class="donut-total">–</strong><span data-i18n="Total">Total</span></div></div>
+                      <div class="legend" id="legend-fruta"></div>
+                    </div>
+                  </article>
+                </aside>
+              </section>
+              <section class="grid-bottom">
+                <article class="panel" style="height: auto;">
+                  <h2 data-i18n="Analizar Muestras Frutas">Analizar Muestras Frutas</h2>
+                  <div class="filter-bar">
+                    <input type="text" class="filter-input" id="filter-analizar-frutas-muestra"
+                      data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarAnalizarCardsFrutas()">
+                    <select class="filter-select" id="filter-analizar-frutas-nombre-muestra"
+                      onchange="filtrarAnalizarCardsFrutas()">
+                      <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                    </select>
+                    <select class="filter-select" id="filter-analizar-frutas-estado"
+                      onchange="filtrarAnalizarCardsFrutas()">
+                      <option value="" data-i18n="Todos los estados">Todos los estados</option>
+                    </select>
+                    <select class="filter-select" id="filter-analizar-frutas-confianza"
+                      onchange="filtrarAnalizarCardsFrutas()">
+                      <option value="" data-i18n="Cualquier Confianza">Cualquier Confianza</option>
+                      <option value="alta" data-i18n="Alta (≥80%)">Alta (≥80%)</option>
+                      <option value="media" data-i18n="Media (50–79%)">Media (50–79%)</option>
+                      <option value="baja" data-i18n="Baja (&lt;50%)">Baja (&lt;50%)</option>
+                    </select>
+                    <button class="filter-alertas" id="filter-analizar-frutas-alertas" onclick="toggleFiltroAlertas('analizar-fruta')">⚠</button>
+                    <button class="filter-clear" onclick="limpiarAnalizarCardsFrutas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+                  </div>
+                  <div class="fruit-grid" id="cards-analizar-frutas" style="max-height: 480px; overflow-y: auto; padding-right: 4px;"></div>
+                </article>
+                <aside class="donut-confianza-wrap-panel">
+                  <article class="panel table-panel-sm">
+                    <h2 data-i18n="Distribución por nivel de confianza del modelo">Distribución por nivel de confianza del modelo</h2>
+                    <div class="donut-wrap">
+                      <div class="donut donut-confianza"><div class="donut-center"><strong class="donut-confianza-total">–</strong><span data-i18n="Total">Total</span></div></div>
+                      <div class="legend">
+                        <div><span class="dot" style="background:#4caf50"></span> <span data-i18n="Alta">Alta</span> <strong class="donut-confianza-porc-alta">0.0%</strong> <small class="donut-confianza-cant-alta">(0)</small></div>
+                        <div><span class="dot" style="background:#ffbb17"></span> <span data-i18n="Media">Media</span> <strong class="donut-confianza-porc-media">0.0%</strong> <small class="donut-confianza-cant-media">(0)</small></div>
+                        <div><span class="dot" style="background:#f15252"></span> <span data-i18n="Baja">Baja</span> <strong class="donut-confianza-porc-baja">0.0%</strong> <small class="donut-confianza-cant-baja">(0)</small></div>
+                      </div>
+                    </div>
+                  </article>
+                </aside>
+              </section>
+              <section class="grid-bottom">
+                <article class="panel table-panel">
+                  <h2 data-i18n="Últimos análisis realizados">Últimos análisis realizados</h2>
+                  <div class="filter-bar">
+                    <input type="text" class="filter-input" id="filter-frutas-muestra" data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarTablaFrutas()">
+                    <select class="filter-select" id="filter-frutas-nombre-muestra" onchange="filtrarTablaFrutas()">
+                      <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                    </select>
+                    <select class="filter-select" id="filter-frutas-estado" onchange="filtrarTablaFrutas()">
+                      <option value="" data-i18n="Todos los estados">Todos los estados</option>
+                    </select>
+                    <select class="filter-select" id="filter-frutas-confianza" onchange="filtrarTablaFrutas()">
+                      <option value="" data-i18n="Cualquier confianza">Cualquier confianza</option>
+                      <option value="alta" data-i18n="Alta (≥80%)">Alta (≥80%)</option>
+                      <option value="media" data-i18n="Media (50–79%)">Media (50–79%)</option>
+                      <option value="baja" data-i18n="Baja (&lt;50%)">Baja (&lt;50%)</option>
+                    </select>
+                    <button class="filter-alertas" id="filter-frutas-alertas" onclick="toggleFiltroAlertas('fruta')">⚠</button>
+                    <button class="filter-clear" onclick="limpiarFiltrosFrutas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+                  </div>
+                  <div class="table-wrap" style="max-height: 380px;">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th data-i18n="Fecha">Fecha</th><th data-i18n="Nombre Muestra">Nombre Muestra</th><th data-i18n="Imagen">Imagen</th><th data-i18n="Nivel Maduración">Nivel Maduración</th><th data-i18n="Estado">Estado</th><th data-i18n="Confianza">Confianza</th><th data-i18n="⚠">⚠</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody-frutas"></tbody>
+                    </table>
+                  </div>
+                </article>
+                <aside class="donut-fruta-duplicado donut-fruta-dinamico">
+                  <article class="panel table-panel-sm">
+                    <h2 data-i18n="Distribución dinámica por estado">Distribución dinámica por estado</h2>
+                    <div class="filter-bar">
+                      <select class="filter-select" id="fd3-fruta-nombre" onchange="actualizarDonutDinamicoFruta()">
+                        <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                      </select>
+                      <select class="filter-select" id="fd3-fruta-estado" onchange="actualizarDonutDinamicoFruta()">
+                        <option value="" data-i18n="Todos los estados">Todos los estados</option>
+                      </select>
+                      <button class="filter-clear" onclick="limpiarFiltrosD3Fruta()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+                    </div>
+                    <div class="donut-wrap">
+                      <div class="donut donut-fruta"><div class="donut-center"><strong class="d3-total">–</strong><span data-i18n="Total">Total</span></div></div>
+                      <div class="legend" id="legend-fruta-dinamico"></div>
+                    </div>
+                    <label class="checkbox-warning">
+                      <input type="checkbox" id="d3-fruta-warning" onchange="toggleWarningD3Fruta()">
+                      <span data-i18n="Habilitar visualizar también las muestras con ⚠">Habilitar visualizar también las muestras con ⚠</span>
+                    </label>
+                  </article>
+                </aside>
+              </section>
+            </div>
+
+          <section class="grid-bottom">
+            <article class="panel table-panel">
+              <h2 data-i18n="Parámetros Colorimétricos (L*a*b*)">Parámetros Colorimétricos (L*a*b*)</h2>
+              <div class="filter-bar">
+                <input type="text" class="filter-input" id="filter-color-frutas-muestra" data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarColorFrutas()">
+                <select class="filter-select" id="filter-color-frutas-nombre-muestra" onchange="filtrarColorFrutas()">
+                  <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                </select>
+                <select class="filter-select" id="filter-color-frutas-rango-l" onchange="filtrarColorFrutas()">
+                  <option value="" data-i18n="L* — cualquier luminosidad">L* — cualquier luminosidad</option>
+                  <option value="oscuro" data-i18n="Oscuro (L* &lt; 40)">Oscuro (L* &lt; 40)</option>
+                  <option value="medio" data-i18n="Medio (40 ≤ L* &lt; 70)">Medio (40 ≤ L* &lt; 70)</option>
+                  <option value="claro" data-i18n="Claro (L* ≥ 70)">Claro (L* ≥ 70)</option>
+                </select>
+                <select class="filter-select" id="filter-color-frutas-tono" onchange="filtrarColorFrutas()">
+                  <option value="" data-i18n="Hue° — cualquier tono">Hue° — cualquier tono</option>
+                  <option value="amarillo" data-i18n="Amarillo (70°–110°)">Amarillo (70°–110°)</option>
+                  <option value="verde" data-i18n="Verde (110°–160°)">Verde (110°–160°)</option>
+                  <option value="otro" data-i18n="Otro">Otro</option>
+                </select>
+                <button class="filter-clear" onclick="limpiarFiltrosColorFrutas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+              </div>
+              <div class="table-wrap" style="max-height: 380px;">
+                <table style="table-layout:fixed;">
+                  <colgroup>
+                    <col style="width:160px;">
+                    <col style="width:75px;"><col style="width:75px;"><col style="width:75px;">
+                    <col style="width:75px;"><col style="width:75px;"><col style="width:75px;">
+                  </colgroup>
+                  <thead id="thead-detalle-color-frutas">
+                    <tr>
+                      <th data-i18n="Nombre Muestra">Nombre Muestra</th><th data-i18n="L*">L*</th><th data-i18n="a*">a*</th><th data-i18n="b*">b*</th><th data-i18n="ΔE">ΔE</th><th data-i18n="Hue°">Hue°</th><th data-i18n="Chroma">Chroma</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-detalle-color-frutas"></tbody>
+                </table>
+              </div>
+              <div id="counter-color-frutas" style="margin:4px 0 0;padding:4px 8px;font-size:.9rem;font-weight:700;color:#374151;"></div>
+            </article>
+
+            <article class="panel table-panel table-panel-sm">
+              <h2 data-i18n="Archivos de Origen">Archivos de Origen</h2>
+                  <div class="table-wrap-no-scroll" style="max-height: 460px; overflow-y: auto;">
+                    <table class="table-sm table-archivos">
+                      <thead>
+                        <tr><th data-i18n="Nombre Muestra">Nombre Muestra</th><th data-i18n="Archivo Origen">Archivo Origen</th></tr>
+                      </thead>
+                      <tbody id="tbody-archivos-frutas"></tbody>
+                    </table>
+                  </div>
+            </article>
+          </section>
+
+          <div class="full-width-row">
+            <article class="panel table-panel" style="height: auto;">
+              <h2 style="text-align: center;" data-i18n="Reflectancias Espectrales (380-780 nm) λ">Reflectancias Espectrales (380-780 nm) λ</h2>
+              <div class="filter-bar">
+                <input type="text" class="filter-input" id="filter-refl-frutas-muestra" data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarReflFrutas()">
+                <select class="filter-select" id="filter-refl-frutas-nombre-muestra" onchange="filtrarReflFrutas()">
+                  <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                </select>
+                <select class="filter-select" id="filter-refl-frutas-zona" onchange="filtrarReflFrutas()">
+                  <option value="" data-i18n="Zona espectral — todas">Zona espectral — todas</option>
+                  <option value="uv" data-i18n="UV cercano (380–430 nm)">UV cercano (380–430 nm)</option>
+                  <option value="visible" data-i18n="Visible central (440–620 nm)">Visible central (440–620 nm)</option>
+                  <option value="rojo" data-i18n="Rojo / IR cercano (630–780 nm)">Rojo / IR cercano (630–780 nm)</option>
+                </select>
+                <button class="filter-clear" onclick="limpiarFiltrosReflFrutas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+              </div>
+              <div style="width: 100%; overflow-x: auto; max-height: 400px; overflow-y: auto;" id="wrap-refl-frutas">
+                <table class="table-expand" id="table-refl-frutas">
+                  <thead id="thead-refl-frutas">
+                    <tr>
+                      <th data-i18n="Nombre Muestra">Nombre Muestra</th>
+                      <th>380</th><th>390</th><th>400</th><th>410</th><th>420</th><th>430</th><th>440</th><th>450</th><th>460</th><th>470</th>
+                      <th>480</th><th>490</th><th>500</th><th>510</th><th>520</th><th>530</th><th>540</th><th>550</th><th>560</th><th>570</th>
+                      <th>580</th><th>590</th><th>600</th><th>610</th><th>620</th><th>630</th><th>640</th><th>650</th><th>660</th><th>670</th>
+                      <th>680</th><th>690</th><th>700</th><th>710</th><th>720</th><th>730</th><th>740</th><th>750</th><th>760</th><th>770</th><th>780</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-reflectancias-frutas"></tbody>
+                </table>
+              </div>
+              <div id="counter-refl-frutas" style="margin:4px 0 0;padding:4px 8px;font-size:.9rem;font-weight:700;color:#374151;"></div>
+            </article>
+          </div>
+
+          <!-- POWER BI — PIÑAS -->
+          <div class="bi-full-row">
+            <article class="panel panel-bi panel-bi-wide">
+              <h2 data-i18n="Reflectance Spectrum (380–780 nm) by Pineapple and Day">Espectro de reflectancia (380–780 nm) por Piña y Día</h2>
+              <div class="bi-frame">
+                <iframe title="Reflectance Spectrum (380–780 nm) by Pineapple and Day" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=19de7cbd-a4bd-4fee-b9b1-abff4a53d479&autoAuth=true&ctid=b1ba85eb-a253-4467-9ee8-d4f8ed4df300&actionBarEnabled=true" frameborder="0" allowFullScreen="true"></iframe>
+              </div>
+            </article>
+          </div>
+
+          <section class="bi-row bi-row-2">
+            <article class="panel panel-bi">
+              <h2 data-i18n="Color Trajectory (a-b) by Pineapple Over Time">Trayectoria de color (a-b) por Piña en el tiempo</h2>
+              <div class="bi-frame">
+                <iframe title="Color Trajectory (a-b) by Pineapple Over Time" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=c7d55de3-b5e4-4874-93a6-6f2f450bb0b7&autoAuth=true&ctid=b1ba85eb-a253-4467-9ee8-d4f8ed4df300&actionBarEnabled=true" frameborder="0" allowFullScreen="true"></iframe>
+              </div>
+            </article>
+            <article class="panel panel-bi">
+              <h2 data-i18n="L Value Evolution by Pineapple (Day 1–8)">Evolución del valor L en Piña (Día 1–8)</h2>
+              <div class="bi-frame">
+                <iframe title="L Value Evolution by Pineapple (Day 1–8)" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=3157e11c-eea7-4c95-b653-fa44d2107583&autoAuth=true&ctid=b1ba85eb-a253-4467-9ee8-d4f8ed4df300&actionBarEnabled=true" frameborder="0" allowFullScreen="true"></iframe>
+              </div>
+            </article>
+          </section>
+        </div><!-- /fruta-dashboard-data -->
+        </section>
+
+        <!-- ================= PÁGINA AROMÁTICAS ================= -->
+        <section class="page page-aromaticas">
+          <header class="topbar">
+            <div class="title-block">
+              <div class="title-icon leaf">🌿</div>
+              <div>
+                <h1 data-i18n="ANÁLISIS DE MADURACIÓN MEDIANTE LA PIGMENTACIÓN DE LAS PLANTAS AROMÁTICAS">ANÁLISIS DE MADURACIÓN MEDIANTE LA PIGMENTACIÓN DE LAS PLANTAS AROMÁTICAS</h1>
+                <p data-i18n="Sistema inteligente de evaluación visual de pigmentación y aroma">Sistema inteligente de evaluación visual de pigmentación y aroma</p>
+              </div>
+            </div>
+            <div class="topbar-right">
+              <div class="selector-proveedor-wrap">
+                <button id="btn-selector-proveedor-aro" class="btn-selector-proveedor">
+                  <span style="font-size:.85rem;">🏢</span>
+                  <span class="selector-proveedor-nombre">Cargando…</span>
+                  <span class="chevron">▾</span>
+                </button>
+                <ul id="dropdown-proveedores-aro" class="dropdown-proveedores" hidden></ul>
+              </div>
+              <div class="selector-fruta-wrap">
+                <button id="btn-selector-aro" class="btn-selector-fruta">
+                  <span id="selector-aro-icono">🌿</span>
+                  <span id="selector-aro-nombre">Cargando…</span>
+                  <span class="chevron">▾</span>
+                </button>
+                <ul id="dropdown-aromaticas" class="dropdown-frutas" hidden></ul>
+              </div>
+              <div class="selector-idioma-wrap" style="position:relative;">
+                <button id="btn-selector-idioma-aro" class="btn-selector-proveedor" style="gap:4px;">
+                  <span id="selector-idioma-flag-aro">🇪🇸</span>
+                  <span class="chevron">▾</span>
+                </button>
+                <ul id="dropdown-idioma-aro" class="dropdown-proveedores" hidden>
+                  <li data-lang="en">🇬🇧</li>
+                </ul>
+              </div>
+            </div>
+          </header>
+
+          <div id="aro-dashboard-blank" style="display:none;">
+            <div style="background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.08);padding:60px 20px;margin:18px 0;text-align:center;">
+              <p style="color:#6b7280;margin-bottom:24px;" data-i18n="Selecciona una planta para ver sus datos">Selecciona una planta para ver sus datos</p>
+              <div style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+                <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra" data-i18n="Cargar Muestra Individual">Cargar Muestra Individual</button></span>
+                <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra btn-lote" data-i18n="Cargar Varias Muestras">Cargar Varias Muestras</button></span>
+              </div>
+            </div>
+          </div>
+
+          <div id="aro-dashboard-data" style="display:flex;flex-direction:column;gap:18px;">
+          <section class="kpi-grid">
+            <article class="kpi-card">
+              <div class="kpi-icon green">🪴</div>
+              <div><span class="kpi-label" data-i18n="Total Analizadas">Total Analizadas</span><strong class="kpi-value" id="kpi-aro-total">–</strong></div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon green">✔</div>
+              <div><span class="kpi-label" data-i18n="Pigmentación Óptima">Pigmentación Óptima</span><strong class="kpi-value" id="kpi-aro-optimas">–</strong></div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon yellow">⏳</div>
+              <div><span class="kpi-label" data-i18n="En Proceso">En Proceso</span><strong class="kpi-value" id="kpi-aro-proceso">–</strong></div>
+            </article>
+            <article class="kpi-card">
+              <div class="kpi-icon red">⛔</div>
+              <div><span class="kpi-label" data-i18n="Baja Pigmentación">Baja Pigmentación</span><strong class="kpi-value" id="kpi-aro-bajas">–</strong></div>
+            </article>
+          </section>
+
+            <div class="left-col-stack">
+              <section class="grid-bottom">
+                <article class="panel" style="height: auto;">
+                  <div class="panel-header-row">
+                    <h2 data-i18n="Últimas Muestras de Aromáticas">Últimas Muestras de Aromáticas</h2>
+                    <div class="panel-header-actions">
+                      <button class="btn-eliminar-muestras" onclick="abrirModalEliminar('aromatica')" data-i18n="Eliminar Muestras">🗑️ Eliminar Muestras</button>
+                      <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra" onclick="abrirModalMuestra('aromaticas')" data-i18n="Cargar Muestra Individual">Cargar Muestra Individual</button></span>
+                      <span class="btn-tooltip-wrap"><span class="btn-tooltip" data-i18n="⚠ Debe crear un proveedor para cargar muestras">⚠ Debe crear un proveedor para cargar muestras</span><button class="btn-cargar-muestra btn-lote" onclick="abrirModalLote('aromaticas')" data-i18n="Cargar Varias Muestras">Cargar Varias Muestras</button></span>
+                    </div>
+                  </div>
+                  <div class="fruit-grid" id="cards-aromaticas" style="max-height: 480px; overflow-y: auto; padding-right: 4px;"></div>
+                </article>
+                <aside class="donut-aro-duplicado">
+                  <article class="panel table-panel-sm">
+                    <h2 data-i18n="Distribución por estado de pigmentación">Distribución por estado de pigmentación</h2>
+                    <div class="donut-wrap">
+                      <div class="donut donut-aromaticas"><div class="donut-center"><strong class="donut-total">–</strong><span data-i18n="Total">Total</span></div></div>
+                      <div class="legend"></div>
+                    </div>
+                  </article>
+                </aside>
+              </section>
+              <section class="grid-bottom">
+                <article class="panel" style="height: auto;">
+                  <h2 data-i18n="Analizar Muestras Aromáticas">Analizar Muestras Aromáticas</h2>
+                  <div class="filter-bar">
+                     <input type="text" class="filter-input" id="filter-analizar-aro-muestra"
+                       data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarAnalizarCardsAromaticas()">
+                    <select class="filter-select" id="filter-analizar-aro-nombre-muestra"
+                      onchange="filtrarAnalizarCardsAromaticas()">
+                      <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                    </select>
+                    <select class="filter-select" id="filter-analizar-aro-estado"
+                      onchange="filtrarAnalizarCardsAromaticas()">
+                      <option value="" data-i18n="Todos los estados">Todos los estados</option>
+                    </select>
+                    <select class="filter-select" id="filter-analizar-aro-confianza"
+                      onchange="filtrarAnalizarCardsAromaticas()">
+                      <option value="" data-i18n="Cualquier Confianza">Cualquier Confianza</option>
+                      <option value="alta" data-i18n="Alta (≥80%)">Alta (≥80%)</option>
+                      <option value="media" data-i18n="Media (50–79%)">Media (50–79%)</option>
+                      <option value="baja" data-i18n="Baja (&lt;50%)">Baja (&lt;50%)</option>
+                    </select>
+                    <button class="filter-alertas" id="filter-analizar-aro-alertas" onclick="toggleFiltroAlertas('analizar-aro')" data-i18n="⚠">⚠</button>
+                    <button class="filter-clear" onclick="limpiarAnalizarCardsAromaticas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+                  </div>
+                  <div class="fruit-grid" id="cards-analizar-aromaticas" style="max-height: 480px; overflow-y: auto; padding-right: 4px;"></div>
+                </article>
+                <aside class="donut-confianza-wrap-panel">
+                  <article class="panel table-panel-sm">
+                    <h2 data-i18n="Distribución por nivel de confianza del modelo">Distribución por nivel de confianza del modelo</h2>
+                    <div class="donut-wrap">
+                      <div class="donut donut-aro-confianza"><div class="donut-center"><strong class="aro-donut-confianza-total">–</strong><span data-i18n="Total">Total</span></div></div>
+                      <div class="aro-legend">
+                        <div><span class="dot" style="background:#4caf50"></span> <span data-i18n="Alta">Alta</span> <strong class="aro-donut-confianza-porc-alta">0.0%</strong> <small class="aro-donut-confianza-cant-alta">(0)</small></div>
+                        <div><span class="dot" style="background:#ffbb17"></span> <span data-i18n="Media">Media</span> <strong class="aro-donut-confianza-porc-media">0.0%</strong> <small class="aro-donut-confianza-cant-media">(0)</small></div>
+                        <div><span class="dot" style="background:#f15252"></span> <span data-i18n="Baja">Baja</span> <strong class="aro-donut-confianza-porc-baja">0.0%</strong> <small class="aro-donut-confianza-cant-baja">(0)</small></div>
+                      </div>
+                    </div>
+                  </article>
+                </aside>
+              </section>
+              <section class="grid-bottom">
+                <article class="panel table-panel">
+                  <h2 data-i18n="Últimos análisis realizados">Últimos análisis realizados</h2>
+                  <div class="filter-bar">
+                    <input type="text" class="filter-input" id="filter-aro-muestra" data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarTablaAromaticas()">
+                    <select class="filter-select" id="filter-aro-nombre-muestra" onchange="filtrarTablaAromaticas()">
+                      <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                    </select>
+                    <select class="filter-select" id="filter-aro-estado" onchange="filtrarTablaAromaticas()">
+                      <option value="" data-i18n="Todos los estados">Todos los estados</option>
+                    </select>
+                    <select class="filter-select" id="filter-aro-confianza" onchange="filtrarTablaAromaticas()">
+                      <option value="" data-i18n="Cualquier confianza">Cualquier confianza</option>
+                      <option value="alta" data-i18n="Alta (≥80%)">Alta (≥80%)</option>
+                      <option value="media" data-i18n="Media (50–79%)">Media (50–79%)</option>
+                      <option value="baja" data-i18n="Baja (&lt;50%)">Baja (&lt;50%)</option>
+                    </select>
+                    <button class="filter-alertas" id="filter-aro-alertas" onclick="toggleFiltroAlertas('aromatica')" data-i18n="⚠">⚠</button>
+                    <button class="filter-clear" onclick="limpiarFiltrosAromaticas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+                  </div>
+                  <div class="table-wrap" style="max-height: 380px;">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th data-i18n="Fecha">Fecha</th><th data-i18n="Nombre Muestra">Nombre Muestra</th><th data-i18n="Imagen">Imagen</th><th data-i18n="Nivel Pigmentación">Nivel Pigmentación</th><th data-i18n="Estado">Estado</th><th data-i18n="Confianza">Confianza</th><th data-i18n="⚠">⚠</th>
+                        </tr>
+                      </thead>
+                      <tbody id="tbody-aromaticas"></tbody>
+                    </table>
+                  </div>
+                </article>
+                <aside class="donut-aro-duplicado donut-aro-dinamico">
+                  <article class="panel table-panel-sm">
+                    <h2 data-i18n="Distribución dinámica por estado de pigmentación">Distribución dinámica por estado de pigmentación</h2>
+                    <div class="filter-bar">
+                      <select class="filter-select" id="fd3-aro-nombre" onchange="actualizarDonutDinamicoAro()">
+                        <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                      </select>
+                      <select class="filter-select" id="fd3-aro-estado" onchange="actualizarDonutDinamicoAro()">
+                        <option value="" data-i18n="Todos los estados">Todos los estados</option>
+                      </select>
+                      <button class="filter-clear" onclick="limpiarFiltrosD3Aro()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+                    </div>
+                    <div class="donut-wrap">
+                      <div class="donut donut-aromaticas"><div class="donut-center"><strong class="d3-total-aro">–</strong><span data-i18n="Total">Total</span></div></div>
+                      <div class="legend" id="legend-aro-dinamico"></div>
+                    </div>
+                    <label class="checkbox-warning">
+                      <input type="checkbox" id="d3-aro-warning" onchange="toggleWarningD3Aro()">
+                      <span data-i18n="Habilitar visualizar también las muestras con ⚠">Habilitar visualizar también las muestras con ⚠</span>
+                    </label>
+                  </article>
+                </aside>
+              </section>
+            </div>
+
+          <section class="grid-bottom">
+            <article class="panel table-panel">
+              <h2 data-i18n="Parámetros Colorimétricos (L*a*b*)">Parámetros Colorimétricos (L*a*b*)</h2>
+              <div class="filter-bar">
+                <input type="text" class="filter-input" id="filter-color-aro-muestra" data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarColorAromaticas()">
+                <select class="filter-select" id="filter-color-aro-nombre-muestra" onchange="filtrarColorAromaticas()">
+                  <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                </select>
+                <select class="filter-select" id="filter-color-aro-rango-l" onchange="filtrarColorAromaticas()">
+                  <option value="" data-i18n="L* — cualquier luminosidad">L* — cualquier luminosidad</option>
+                  <option value="oscuro" data-i18n="Oscuro (L* &lt; 40)">Oscuro (L* &lt; 40)</option>
+                  <option value="medio" data-i18n="Medio (40 ≤ L* &lt; 70)">Medio (40 ≤ L* &lt; 70)</option>
+                  <option value="claro" data-i18n="Claro (L* ≥ 70)">Claro (L* ≥ 70)</option>
+                </select>
+                <select class="filter-select" id="filter-color-aro-tono" onchange="filtrarColorAromaticas()">
+                  <option value="" data-i18n="Hue° — cualquier tono">Hue° — cualquier tono</option>
+                  <option value="verde" data-i18n="Verde (90°–160°)">Verde (90°–160°)</option>
+                  <option value="amarillo" data-i18n="Amarillo (70°–89°)">Amarillo (70°–89°)</option>
+                  <option value="otro" data-i18n="Otro">Otro</option>
+                </select>
+                <button class="filter-clear" onclick="limpiarFiltrosColorAromaticas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+              </div>
+              <div class="table-wrap" style="max-height: 380px;">
+                <table style="table-layout:fixed;">
+                  <colgroup>
+                    <col style="width:160px;">
+                    <col style="width:75px;"><col style="width:75px;"><col style="width:75px;">
+                    <col style="width:75px;"><col style="width:75px;"><col style="width:75px;">
+                  </colgroup>
+                  <thead id="thead-detalle-color-aromaticas">
+                    <tr>
+                      <th data-i18n="Nombre Muestra">Nombre Muestra</th><th data-i18n="L*">L*</th><th data-i18n="a*">a*</th><th data-i18n="b*">b*</th><th data-i18n="ΔE">ΔE</th><th data-i18n="Hue°">Hue°</th><th data-i18n="Chroma">Chroma</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-detalle-color-aromaticas"></tbody>
+                </table>
+              </div>
+              <div id="counter-color-aro" style="margin:4px 0 0;padding:4px 8px;font-size:.9rem;font-weight:700;color:#374151;"></div>
+            </article>
+
+                <article class="panel table-panel table-panel-sm">
+<h2 data-i18n="Archivos de Origen">Archivos de Origen</h2>
+                  <div class="table-wrap-no-scroll" style="max-height: 460px; overflow-y: auto;">
+                    <table class="table-sm table-archivos">
+                      <thead>
+                        <tr><th data-i18n="Nombre Muestra">Nombre Muestra</th><th data-i18n="Archivo Origen">Archivo Origen</th></tr>
+                      </thead>
+                      <tbody id="tbody-archivos-aromaticas"></tbody>
+                    </table>
+                  </div>
+                </article>
+          </section>
+
+          <div class="full-width-row">
+            <article class="panel table-panel" style="height: auto;">
+              <h2 style="text-align: center;" data-i18n="Reflectancias Espectrales (380-780 nm) λ">Reflectancias Espectrales (380-780 nm) λ</h2>
+              <div class="filter-bar">
+                <input type="text" class="filter-input" id="filter-refl-aro-muestra" data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarReflAromaticas()">
+                <select class="filter-select" id="filter-refl-aro-nombre-muestra" onchange="filtrarReflAromaticas()">
+                  <option value="" data-i18n="Por Nombre Muestra">Por Nombre Muestra</option>
+                </select>
+                <select class="filter-select" id="filter-refl-aro-zona" onchange="filtrarReflAromaticas()">
+                  <option value="" data-i18n="Zona espectral — todas">Zona espectral — todas</option>
+                  <option value="uv" data-i18n="UV cercano (390–430 nm)">UV cercano (390–430 nm)</option>
+                  <option value="visible" data-i18n="Visible central (440–620 nm)">Visible central (440–620 nm)</option>
+                  <option value="rojo" data-i18n="Rojo / IR cercano (630–710 nm)">Rojo / IR cercano (630–710 nm)</option>
+                </select>
+                <button class="filter-clear" onclick="limpiarFiltrosReflAromaticas()" data-i18n="✕ Limpiar">✕ Limpiar</button>
+              </div>
+              <div style="width: 100%; overflow-x: auto; max-height: 400px; overflow-y: auto;" id="wrap-refl-aro">
+                <table class="table-expand" id="table-refl-aro">
+                  <thead id="thead-refl-aro">
+                    <tr>
+                      <th data-i18n="Nombre Muestra">Nombre Muestra</th>
+                      <th>380</th><th>390</th><th>400</th><th>410</th><th>420</th><th>430</th><th>440</th><th>450</th><th>460</th><th>470</th>
+                      <th>480</th><th>490</th><th>500</th><th>510</th><th>520</th><th>530</th><th>540</th><th>550</th><th>560</th><th>570</th>
+                      <th>580</th><th>590</th><th>600</th><th>610</th><th>620</th><th>630</th><th>640</th><th>650</th><th>660</th><th>670</th>
+                      <th>680</th><th>690</th><th>700</th><th>710</th><th>720</th><th>730</th><th>740</th><th>750</th><th>760</th><th>770</th><th>780</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody-reflectancias-aromaticas"></tbody>
+                </table>
+              </div>
+              <div id="counter-refl-aro" style="margin:4px 0 0;padding:4px 8px;font-size:.9rem;font-weight:700;color:#374151;"></div>
+            </article>
+          </div>
+
+          <!-- POWER BI — AROMÁTICAS -->
+          <div class="bi-full-row">
+            <article class="panel panel-bi panel-bi-wide">
+              <h2 data-i18n="Curvas Espectrales de Reflectancia (400 - 700 nm) por Tipo de aromatica">Curvas Espectrales de Reflectancia (400 - 700 nm) por Tipo de aromatica</h2>
+              <div class="bi-frame">
+                <iframe title="reflectancias aromaticas" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=b4ada628-ff18-43c7-bcf5-a4d392f0f205&autoAuth=true&ctid=b1ba85eb-a253-4467-9ee8-d4f8ed4df300" frameborder="0" allowFullScreen="true"></iframe>
+              </div>
+            </article>
+          </div>
+
+          <section class="bi-row bi-row-2">
+            <article class="panel panel-bi">
+              <h2 data-i18n="Color Trajectory (a-b) by Herb Over Time">Trayectoria de color (a-b) por Hierba en el tiempo</h2>
+              <div class="bi-frame">
+                <iframe title="Color Trajectory (a-b) by Herb Over Time" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=0ca8e6c9-6833-4f84-b05d-1e75b5bc9a51&autoAuth=true&ctid=b1ba85eb-a253-4467-9ee8-d4f8ed4df300&actionBarEnabled=true" frameborder="0" allowFullScreen="true"></iframe>
+              </div>
+            </article>
+            <article class="panel panel-bi">
+              <h2 data-i18n="Lightness (L) Trend by Herb Over Time">Tendencia de luminosidad (L) por Hierba en el tiempo</h2>
+              <div class="bi-frame">
+                <iframe title="Lightness (L) Trend by Herb Over Time" width="1140" height="541.25" src="https://app.powerbi.com/reportEmbed?reportId=b4f8b027-098b-435c-b45c-a925c88daad9&autoAuth=true&ctid=b1ba85eb-a253-4467-9ee8-d4f8ed4df300&actionBarEnabled=true" frameborder="0" allowFullScreen="true"></iframe>
+              </div>
+            </article>
+          </section>
+        </div><!-- /aro-dashboard-data -->
+        </section>
+
+      </section>
+
+      <!-- ══════════════════════════════════════════════ -->
+      <!--  PÁGINA DE CONFIGURACIÓN                       -->
+      <!-- ══════════════════════════════════════════════ -->
+      <section class="page page-config" id="page-config">
+        <header class="topbar">
+          <h1 data-i18n="Configuración del Sistema">⚙️ Configuración del Sistema</h1>
+        </header>
+
+        <nav class="config-tabs">
+          <button class="config-tab active" data-tab="proveedores" data-i18n="Proveedores">🏭 Proveedores</button>
+          <button class="config-tab" data-tab="frutas" data-i18n="Frutas">🍍 Frutas</button>
+          <button class="config-tab" data-tab="aromaticas" data-i18n="Aromáticas">🌿 Aromáticas</button>
+        </nav>
+
+        <div class="config-panel" id="tab-proveedores">
+          <div class="panel-header-row">
+            <h2 data-i18n="Gestión de Proveedores">Gestión de Proveedores</h2>
+            <div style="display:flex;gap:8px;">
+              <button class="btn-nuevo-proveedor" onclick="abrirWizardNuevoProveedor()" data-i18n="Nuevo Proveedor">+ Nuevo Proveedor</button>
+              <button class="btn-eliminar-proveedores" onclick="eliminarProveedoresSeleccionados()" id="btn-eliminar-proveedores" disabled data-i18n="Eliminar seleccionados">🗑️ Eliminar seleccionados</button>
+            </div>
+          </div>
+          <div class="tabla-config-wrap">
+          <table id="tabla-proveedores" class="tabla-config">
+            <thead><tr>
+              <th style="width:36px;"><input type="checkbox" id="check-proveedores-all" onchange="toggleTodosProveedores(this)"></th>
+              <th data-i18n="Nombre">Nombre</th><th data-i18n="NIT">NIT</th><th data-i18n="Contacto">Contacto</th><th data-i18n="Ciudad">Ciudad</th><th data-i18n="Acciones">Acciones</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+          </div>
+        </div>
+
+        <div class="config-panel hidden" id="tab-frutas">
+          <div class="panel-header-row">
+            <h2 data-i18n="Tipos de Frutas">Tipos de Frutas</h2>
+          </div>
+          <div id="grid-config-frutas" class="grid-config-items"></div>
+        </div>
+
+        <div class="config-panel hidden" id="tab-aromaticas">
+          <h2 data-i18n="Tipos de Aromáticas">Tipos de Aromáticas</h2>
+          <div id="grid-config-aromaticas" class="grid-config-items"></div>
+        </div>
+
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal Cargar Muestra (individual) - Estilo Wizard Paso 4 -->
+  <div class="modal-overlay" id="modal-cargar-muestra" style="display:none;">
+    <div class="modal-box modal-muestra-box">
+      <button class="modal-close" onclick="cerrarModalMuestra()">✕</button>
+      <h2 id="modal-muestra-titulo" data-i18n="Cargar muestra">Cargar muestra</h2>
+
+      <div class="form-sesion" style="padding-left:0;margin-top:8px;max-width:none;">
+        <label for="modal-fecha-sesion" data-i18n="Fecha de la sesión">Fecha de la sesión</label>
+        <input type="date" id="modal-fecha-sesion">
+
+        <label style="margin-bottom:8px;display:block;" data-i18n="Estados de maduración a evaluar">Estados de maduración a evaluar</label>
+        <div class="grid-estados-maduracion" id="grid-estados-maduracion-individual" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;align-items:center;"></div>
+        <p class="error-msg" id="error-estados-individual-modal" style="display:none!important;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona al menos un estado de maduración">Selecciona al menos un estado de maduración</p>
+
+        <div id="wrapper-nombre-individual-modal" style="display:none;">
+          <label data-i18n="Nombre de la muestra">Nombre de la muestra</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" id="modal-nombre-muestra" disabled data-i18n-placeholder="Ej: fruta1.1.1" style="flex:1;max-width:400px;margin-bottom:0;">
+            <button type="button" class="btn-secondary" onclick="habilitarEdicionNombreModal()" style="flex:0 0 auto;padding:10px 14px;border:1px solid transparent;font-size:.9rem;" data-i18n="Editar">✏️ Editar</button>
+          </div>
+          <p id="msg-formato-individual-modal" style="margin:2px 0 8px 0;font-size:.8rem;color:#16a34a;display:none;" data-i18n="Nombre Muestra con formato fruta1.1.1">Nombre Muestra con formato fruta1.1.1</p>
+        </div>
+
+        <label data-i18n="Archivo CSV del colorímetro">Archivo CSV del colorímetro</label>
+        <div class="csv-inline-section" style="margin-bottom:8px;">
+          <button type="button" class="btn-secondary btn-seleccionar-csv-inline" onclick="document.getElementById('input-csv-individual').click()" data-i18n="Cargar CSV">📄 Cargar CSV</button>
+          <input type="file" id="input-csv-individual" accept=".csv" style="display:none;" onchange="seleccionarCSVIndividual(event)">
+          <div style="display:flex;align-items:center;gap:6px;">
+            <p class="csv-info-inline" id="csv-info-individual" style="margin:0;" data-i18n="Ningún archivo seleccionado">Ningún archivo seleccionado</p>
+            <button class="csv-remove-btn" id="btn-quitar-csv-individual" style="display:none;" onclick="quitarCSVIndividual()" data-i18n-title="Quitar CSV">✕</button>
+          </div>
+        </div>
+        <p class="error-msg" id="error-csv-individual-modal" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona un archivo CSV">Selecciona un archivo CSV</p>
+
+        <label data-i18n="Imagen de la muestra *">Imagen de la muestra *</label>
+        <div class="upload-preview" id="upload-preview" onclick="document.getElementById('input-imagen-muestra').click()" style="border:2px dashed #d1d5db;border-radius:8px;padding:20px;text-align:center;cursor:pointer;margin-bottom:8px;">
+          <img id="preview-img" src="" alt="" style="display:none;max-width:100%;max-height:150px;border-radius:4px;">
+          <div class="upload-placeholder" id="upload-placeholder">
+            <span style="font-size:2rem;">🖼️</span>
+            <p style="margin:4px 0;font-size:.9rem;" data-i18n="Haz clic para seleccionar una imagen">Haz clic para seleccionar una imagen</p>
+            <small style="color:#9ca3af;" data-i18n="JPG, PNG o WEBP">JPG, PNG o WEBP</small>
+          </div>
+        </div>
+        <input type="file" id="input-imagen-muestra" accept="image/*" style="display:none;" onchange="previsualizarImagen(event)">
+        <p class="error-msg" id="error-imagen-individual-modal" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona una imagen">Selecciona una imagen</p>
+
+        <div class="modal-actions" style="margin-top:8px;">
+          <button class="btn-secondary" onclick="cerrarModalMuestra()" data-i18n="Cancelar">Cancelar</button>
+          <button class="btn-primary" id="btn-cargar-muestra" onclick="guardarMuestra()" disabled data-i18n="Guardar muestra">💾 Guardar muestra</button>
+        </div>
+
+        <p class="modal-msg" id="modal-msg"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Asignar por Lote (varias muestras) - Estilo Wizard Paso 4 -->
+  <div class="modal-overlay" id="modal-asignar-lote" style="display:none;">
+    <div class="modal-box modal-lote-box">
+      <button class="modal-close" onclick="cerrarModalLote()">✕</button>
+      <h2 id="modal-lote-titulo" data-i18n="Cargar Varias Muestras">Cargar Varias Muestras</h2>
+
+      <div class="form-sesion" style="padding-left:0;margin-top:8px;max-width:none;">
+        <label for="modal-fecha-sesion-lote" data-i18n="Fecha de la sesión">Fecha de la sesión</label>
+        <input type="date" id="modal-fecha-sesion-lote">
+
+        <label style="margin-bottom:8px;display:block;" data-i18n="Estados de maduración a evaluar">Estados de maduración a evaluar</label>
+        <div class="grid-estados-maduracion" id="grid-estados-maduracion-lote" style="display:grid;grid-template-columns:repeat(2,1fr);gap:4px;align-items:center;"></div>
+        <p class="error-msg" id="error-estados-lote-modal" style="display:none!important;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona al menos un estado de maduración">Selecciona al menos un estado de maduración</p>
+
+        <div id="wrapper-nombre-lote-modal" style="display:none;">
+          <label data-i18n="Nombre de la muestra">Nombre de la muestra</label>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <input type="text" id="modal-nombre-lote" disabled data-i18n-placeholder="Ej: fruta1.1.1" style="flex:1;max-width:400px;margin-bottom:0;">
+            <button type="button" class="btn-secondary" onclick="habilitarEdicionNombreLoteModal()" style="flex:0 0 auto;padding:10px 14px;border:1px solid transparent;font-size:.9rem;" data-i18n="Editar">✏️ Editar</button>
+          </div>
+          <p id="msg-formato-lote-modal" style="margin:2px 0 8px 0;font-size:.8rem;color:#16a34a;display:none;" data-i18n="Nombre Muestra con formato fruta1.1.1">Nombre Muestra con formato fruta1.1.1</p>
+        </div>
+
+        <p class="error-msg" id="error-csv-lote-modal" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona un archivo CSV">Selecciona un archivo CSV</p>
+        <label data-i18n="Archivo CSV del colorímetro">Archivo CSV del colorímetro</label>
+        <div class="csv-inline-section" style="margin-bottom:8px;">
+          <button type="button" class="btn-secondary btn-seleccionar-csv-inline" onclick="document.getElementById('input-csv-lote').click()" data-i18n="Seleccionar CSV">📄 Seleccionar CSV</button>
+          <input type="file" id="input-csv-lote" accept=".csv" multiple style="display:none;" onchange="seleccionarCSVLote(event)">
+          <p class="csv-info-inline" id="csv-info-lote" style="margin:0;" data-i18n="Ningún archivo seleccionado">Ningún archivo seleccionado</p>
+          <div class="csv-preview-wrap csv-preview-lote" id="csv-preview-lote-wrap" style="display:none;"></div>
+        </div>
+
+        <p class="error-msg" id="error-imagenes-lote-modal" style="display:none;color:#b91c1c;font-size:.85rem;margin:2px 0 4px;" data-i18n="Selecciona al menos una imagen">Selecciona al menos una imagen</p>
+        <label data-i18n="Imágenes">Imágenes</label>
+        <div class="csv-inline-section" style="margin-bottom:8px;">
+          <button type="button" class="btn-secondary btn-seleccionar-csv-inline" onclick="document.getElementById('input-imagenes-lote').click()" data-i18n="Seleccionar imágenes">📁 Seleccionar imágenes</button>
+          <input type="file" id="input-imagenes-lote" accept="image/*" multiple style="display:none;" onchange="seleccionarImagenesLote(event)">
+          <p class="csv-info-inline" id="lote-info-imagenes" data-i18n="Ninguna imagen seleccionada">Ninguna imagen seleccionada</p>
+        </div>
+        <div class="lote-grid" id="lote-grid-imagenes" style="margin-top:8px;"></div>
+
+        <label style="margin-top:12px;" data-i18n="Asignar imágenes a muestras">Asignar imágenes a muestras</label>
+        <div class="lote-tabla-wrap" style="margin-bottom:12px;">
+          <table class="lote-tabla">
+            <thead>
+              <tr>
+                <th data-i18n="#">#</th>
+                <th data-i18n="Nombre Archivo">Nombre Archivo</th>
+                <th data-i18n="Muestra">Muestra</th>
+                <th data-i18n="Imagen asignada">Imagen asignada</th>
+              </tr>
+            </thead>
+              <tbody id="lote-tabla-cuerpo">
+                <tr><td colspan="4" class="lote-empty" data-i18n="Carga un CSV para ver las muestras">Carga un CSV para ver las muestras</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="lote-validacion" id="lote-validacion-msg">
+          <span id="lote-validacion-texto" data-i18n="Carga un CSV para ver las muestras, luego asigna imágenes">Carga un CSV para ver las muestras, luego asigna imágenes</span>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn-secondary" onclick="cerrarModalLote()" data-i18n="Cancelar">Cancelar</button>
+          <button class="btn-primary" id="btn-guardar-lote" onclick="guardarLote()" disabled data-i18n="Guardar muestras">💾 Guardar muestras</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Eliminar Muestras (selección) -->
+  <div class="modal-overlay" id="modal-eliminar" style="display:none;">
+    <div class="modal-box modal-eliminar-box">
+      <button class="modal-close" onclick="cerrarModalEliminar()">✕</button>
+      <h2 id="modal-eliminar-titulo" data-i18n="Seleccionar muestras a eliminar">Seleccionar muestras a eliminar</h2>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:4px 0;">
+        <span style="font-size:.8rem;color:#6b7280;" id="eliminar-total-msg"></span>
+        <button class="btn-link" id="btn-seleccionar-todas" onclick="toggleSeleccionarTodas()" style="display:none;" data-i18n="Seleccionar todas">Seleccionar todas</button>
+      </div>
+      <div id="modal-eliminar-cards" class="eliminar-grid">
+        <p class="lote-empty" data-i18n="Cargando muestras…">Cargando muestras…</p>
+      </div>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn-secondary" onclick="cerrarModalEliminar()" data-i18n="Cancelar">Cancelar</button>
+        <button class="btn-primary" id="btn-eliminar-guardar" onclick="confirmarEliminacion()" disabled data-i18n="Eliminar Muestras">Eliminar Muestras</button>
+      </div>
+      <p class="modal-msg" id="modal-eliminar-msg"></p>
+    </div>
+  </div>
+
+  <!-- Modal Confirmar Eliminación -->
+  <div class="modal-overlay" id="modal-confirmar-eliminar" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarModalEliminar()">✕</button>
+      <h2 data-i18n="Confirmar eliminación">⚠️ Confirmar eliminación</h2>
+      <p style="font-size:.95rem;line-height:1.5;margin:20px 0;color:#374151;">
+        <span data-i18n="¿Estas seguro de eliminar">¿Estas seguro de eliminar</span> <strong id="confirmar-cantidad">0</strong> <span data-i18n="muestra(s) seleccionada(s)?">muestra(s) seleccionada(s)?</span>
+        <br><br>
+        <span data-i18n="Una vez eliminadas las muestras seleccionadas se tendran que subir de nuevo.">Una vez eliminadas las muestras seleccionadas se tendran que subir de nuevo.</span>
+      </p>
+      <div class="modal-actions">
+        <button class="btn-back" onclick="volverAtras()" data-i18n="Atrás">Atrás</button>
+        <button class="btn-danger" onclick="ejecutarEliminacion()" data-i18n="Eliminar">🗑️ Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Proveedor -->
+  <div class="modal-overlay" id="modal-proveedor" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarModalProveedor()">✕</button>
+      <h2 id="modal-proveedor-titulo" data-i18n="Nuevo Proveedor">Nuevo Proveedor</h2>
+      <input type="hidden" id="input-proveedor-id">
+      <div class="modal-form">
+        <label data-i18n="Nombre *">Nombre *</label>
+        <input type="text" id="input-proveedor-nombre" required>
+        <label data-i18n="NIT *">NIT *</label>
+        <input type="text" id="input-proveedor-nit" maxlength="10" required>
+        <p class="error-msg" id="error-nit-proveedor" style="color:#b91c1c;font-size:.9rem;display:none;margin:4px 0;"></p>
+        <label data-i18n="Contacto">Contacto</label>
+        <input type="text" id="input-proveedor-contacto">
+        <label data-i18n="Teléfono">Teléfono</label>
+        <input type="text" id="input-proveedor-telefono" inputmode="numeric" pattern="[0-9]*">
+        <p class="error-msg" id="error-tel-proveedor" style="color:#b91c1c;font-size:.9rem;display:none;margin:4px 0;"></p>
+        <label data-i18n="Ciudad">Ciudad</label>
+        <input type="text" id="input-proveedor-ciudad">
+        <label data-i18n="Notas">Notas</label>
+        <textarea id="input-proveedor-notas"></textarea>
+        <div id="seccion-config-proveedor" style="margin-top:16px;border-top:1px solid #e5e7eb;padding-top:12px;">
+          <h3 style="font-size:.95rem;margin:0 0 8px;" data-i18n="Configuración de tipos">Configuración de tipos</h3>
+          <div style="margin-bottom:8px;">
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;" data-i18n="🍓 Frutas">
+              <input type="checkbox" class="check-categoria-proveedor" value="frutas" onchange="toggleCategoriaProveedor('frutas')"> 🍓 Frutas
+            </label>
+            <div id="tipos-frutas-proveedor" class="tipo-checkbox-grid" style="display:none;margin:4px 0 0 20px;"></div>
+          </div>
+          <div>
+            <label style="display:flex;align-items:center;gap:6px;cursor:pointer;" data-i18n="🌿 Aromáticas">
+              <input type="checkbox" class="check-categoria-proveedor" value="aromaticas" onchange="toggleCategoriaProveedor('aromaticas')"> 🌿 Aromáticas
+            </label>
+            <div id="tipos-aromaticas-proveedor" class="tipo-checkbox-grid" style="display:none;margin:4px 0 0 20px;"></div>
+          </div>
+        </div>
+      </div>
+      <p id="modal-proveedor-error" style="color:#b91c1c;font-size:.9rem;display:none;margin:8px 0;"></p>
+      <div class="modal-actions" style="margin-top:16px;">
+        <button class="btn-secondary" onclick="cerrarModalProveedor()" data-i18n="Cancelar">Cancelar</button>
+        <button class="btn-primary" onclick="guardarProveedor()" data-i18n="Guardar">Guardar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal cambios sin guardar -->
+  <div class="modal-overlay" id="modal-confirm-cambios" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" onclick="cerrarConfirmCambios()">✕</button>
+      <h2 data-i18n="Cambios sin guardar">⚠️ Cambios sin guardar</h2>
+      <p style="font-size:.95rem;line-height:1.5;margin:20px 0;color:#374151;" id="modal-confirm-cambios-msg"></p>
+      <div class="modal-actions">
+        <button class="btn-secondary" onclick="cerrarConfirmCambios()" data-i18n="Cancelar">Cancelar</button>
+        <button class="btn-danger" id="btn-confirm-cambios-continuar" data-i18n="Continuar">Continuar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: proveedor(s) protegido(s) — tiene datos -->
+  <div class="modal-overlay" id="modal-proveedor-protegido" style="display:none;z-index:10001;">
+    <div class="modal-box" style="max-width:480px;">
+      <button class="modal-close" onclick="cerrarModalProveedorProtegido()">✕</button>
+      <div style="text-align:center;margin-bottom:16px;font-size:2.5rem;">🔒</div>
+      <h2 style="text-align:center;margin:0 0 10px;" data-i18n="No se puede eliminar">No se puede eliminar</h2>
+      <p id="modal-protegido-msg" style="text-align:center;color:#6b7280;font-size:.92rem;line-height:1.5;"></p>
+      <div style="margin-top:20px;display:flex;justify-content:center;">
+        <button class="btn-primary" style="max-width:160px;"
+                onclick="cerrarModalProveedorProtegido()" data-i18n="Entendido">Entendido</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: confirmación eliminar proveedor(s) sin datos -->
+  <div id="modal-confirm-eliminar-proveedor" class="modal-overlay" style="display:none;z-index:10001;">
+    <div class="modal-box" style="max-width:440px;">
+      <button class="modal-close"
+              onclick="document.getElementById('modal-confirm-eliminar-proveedor').style.display='none'">✕</button>
+      <div style="text-align:center;margin-bottom:14px;font-size:2.2rem;">🗑️</div>
+      <h2 style="text-align:center;margin:0 0 10px;" data-i18n="Confirmar eliminación">Confirmar eliminación</h2>
+      <p id="modal-confirm-eliminar-msg" style="text-align:center;color:#6b7280;font-size:.92rem;line-height:1.5;"></p>
+      <div class="modal-actions" style="margin-top:20px;">
+        <button class="btn-secondary" data-i18n="Cancelar"
+                onclick="document.getElementById('modal-confirm-eliminar-proveedor').style.display='none'">
+          Cancelar
+        </button>
+        <button id="btn-confirm-eliminar-proveedor" class="btn-danger" data-i18n="Eliminar">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Individual (detail rows for a sample card) -->
+  <div class="modal-overlay" id="modal-individual" style="display:none;">
+    <div class="modal-box modal-individual-box">
+      <button class="modal-close" onclick="cerrarModalIndividual()">✕</button>
+      <h2 id="modal-individual-title" data-i18n="Análisis individual de muestra">Análisis individual de muestra</h2>
+      <div class="individual-layout">
+        <!-- Left: Donut -->
+        <div class="individual-donut-col">
+          <div id="individual-imagen-muestra" style="margin-bottom:12px;text-align:center;"></div>
+          <div class="donut donut-individual"><div class="donut-center"><strong class="individual-donut-total">–</strong><span data-i18n="Total">Total</span></div></div>
+          <div class="legend" id="legend-individual"></div>
+        </div>
+        <!-- Right: Table -->
+        <div class="individual-table-col">
+          <div class="filter-bar">
+            <input type="text" class="filter-input" id="filter-individual-muestra" data-i18n-placeholder="🔍 Buscar muestra…" oninput="filtrarTablaIndividual()">
+            <select class="filter-select" id="filter-individual-estado" onchange="filtrarTablaIndividual()">
+              <option value="" data-i18n="Todos los estados">Todos los estados</option>
+            </select>
+            <select class="filter-select" id="filter-individual-confianza" onchange="filtrarTablaIndividual()">
+              <option value="" data-i18n="Cualquier confianza">Cualquier confianza</option>
+              <option value="alta" data-i18n="Alta (≥80%)">Alta (≥80%)</option>
+              <option value="media" data-i18n="Media (50–79%)">Media (50–79%)</option>
+              <option value="baja" data-i18n="Baja (&lt;50%)">Baja (&lt;50%)</option>
+            </select>
+            <button class="filter-clear" onclick="limpiarFiltrosIndividual()" data-i18n="Limpiar">✕ Limpiar</button>
+          </div>
+          <div class="table-wrap" style="overflow-y:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th data-i18n="Nombre Muestra">Nombre Muestra</th>
+                  <th data-i18n="Nivel">Nivel <span class="individual-nivel-label">Maduración</span></th>
+                  <th data-i18n="Estado">Estado</th>
+                  <th data-i18n="Confianza">Confianza</th>
+                  <th>⚠</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-individual"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/i18n.js?v=27"></script>
+  <script src="js/utils.js?v=26"></script>
+  <script src="js/helpers.js?v=26"></script>
+  <script src="js/modals-shared.js?v=26"></script>
+  <script src="js/frutas.js?v=26"></script>
+  <script src="js/aromaticas.js?v=26"></script>
+  <script src="js/configuracion.js?v=26"></script>
+  <script src="js/init.js?v=26"></script>
+  <script src="js/wizard.js?v=26"></script>
+</body>
+</html>
